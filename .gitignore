@@ -1,0 +1,82 @@
+# Compiled object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Compiled dynamic libraries (shared libraries)
+*.dll
+*.so
+*.dylib
+
+# Executables
+*.exe
+*.out
+
+# C/C++ specific files
+*.c~
+*.h~
+*.cpp~
+*.hpp~
+
+# Visual Studio Code specific files
+.vscode/
+
+# Visual Studio specific files
+*.suo
+*.user
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+[Tt]humbs.db
+*.db
+
+# Eclipse specific files
+.settings/
+.metadata/
+bin/
+tmp/
+
+# Code::Blocks specific files
+bin/
+bin64/
+*.depend
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+build/
+
+# Qt Creator specific files
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.autosave
+
+# Xcode specific files
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcworkspace
+*.xcuserdatad
+
+# macOS specific files
+.DS_Store
+
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
