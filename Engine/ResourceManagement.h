@@ -6,7 +6,7 @@ template <class T>
 class Resource {
 
 public:
-	Resouce(char* name, char* path = "./") {
+	Resource(char* name, char* path = "./") {
 		if (name != NULL) {
 			m_name = new char[strlen(name) + 1];
 			memcpy(m_name, name, (strlen(name) + 1) * sizeof(char));
@@ -110,7 +110,7 @@ public:
 
 		(*resource)->DecreaseRef();
 
-		if (*resource)->GetRefCount() == 0){
+		if ((*resource)->GetRefCount() == 0){
 			m_list->Remove(resource);
 		}
 	}

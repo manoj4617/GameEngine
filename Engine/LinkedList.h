@@ -185,15 +185,24 @@ public:
 	}
 
 	T* GetCurrent() {
-		(m_iterate != nullptr) ? return m_iterate->data : return nullptr;
+		if (m_iterate)
+			return m_iterate->data;
+		else
+			return nullptr;
 	}
 
 	T* GetFirst() {
-		(m_first != nullptr) ? return m_first->data : return nullptr;
+		if (m_first)
+			return m_first->data;
+		else
+			return nullptr;
 	}
 
 	T* GetLast() {
-		(m_last != nullptr) ? return m_last->data : return nullptr;
+		if (m_last)
+			return m_last->data;
+		else
+			return nullptr;
 	}
 
 	T* GetNext(T *element) {

@@ -21,7 +21,7 @@
 
 # Visual Studio Code specific files
 .vscode/
-.vs/
+Engine/.vs
 
 # Visual Studio specific files
 *.suo
@@ -32,6 +32,8 @@
 *.VC.opendb
 [Tt]humbs.db
 *.db
+*.VC.db-shm
+*.VC.db-wal
 
 # Eclipse specific files
 .settings/
