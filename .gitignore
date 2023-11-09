@@ -3,6 +3,10 @@
 *.ko
 *.obj
 *.elf
+*.ilk
+*.log
+*.tlog
+
 
 # Compiled dynamic libraries (shared libraries)
 *.dll
@@ -22,6 +26,7 @@
 # Visual Studio Code specific files
 .vscode/
 Engine/.vs
+x64/
 
 # Visual Studio specific files
 *.suo
