@@ -1,6 +1,8 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#pragma comment(lib, "dinput8")
+
 #define DIRECTINPUT_VERSION 0x0800
 
 //System headers
@@ -23,14 +25,18 @@
 #include "LinkedList.h"
 #include "ResourceManagement.h"
 #include "Geometry.h"
+#include "State.h"
+#include "Input.h"
 
 struct EngineSetup {
 	HINSTANCE instance;
 	char* name;
+	void (*StateSetup)();
 
 	EngineSetup() {
 		instance = NULL;
 		name = (char*)("Application");
+		StateSetup = NULL;
 	}
 };
 
@@ -43,12 +49,25 @@ public:
 	HWND GetWindow();
 	void SetDeactiveFlag(bool deactive);
 
-private:
-	bool m_loaded;		// Indicates if the engine is loading
-	HWND m_window;		// Main window handle
-	bool m_deactive;	// Indicates if the application is active or not
+	void AddState(State* state, bool change = true);
+	void RemoveState(State* state);
+	void ChangeState(unsigned long id);
+	State* GetCurrentState();
 
-	EngineSetup* m_setup;
+	Input* GetInput();
+
+private:
+	bool m_loaded;					// Indicates if the engine is loading
+	HWND m_window;					// Main window handle
+	bool m_deactive;				// Indicates if the application is active or not
+		
+	EngineSetup* m_setup;			// Copy of the engine setup struct
+
+	LinkedList<State>* m_states;	// LL of states
+	State* m_currentState;			// Pointer to current state
+	bool m_stateChanged;			// indicates if the state has changed in the current frame
+
+	Input* m_input;					// Input obj
 };
 
 extern Engine* g_engine;

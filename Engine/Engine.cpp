@@ -2,6 +2,9 @@
 
 Engine* g_engine = NULL;
 
+//-----------------------------------------------------------------------------
+// Handles Windows messages.
+//-----------------------------------------------------------------------------
 LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	switch (msg) {
 	case WM_ACTIVATEAPP:
@@ -18,7 +21,9 @@ LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 }
 
 
-// Engine class constructor
+//-----------------------------------------------------------------------------
+// The engine class constructor.
+//-----------------------------------------------------------------------------
 Engine::Engine(EngineSetup* setup) {
 	
 	// indicate that the engine is not yet loaded
@@ -60,14 +65,30 @@ Engine::Engine(EngineSetup* setup) {
 	// Create a window and retrieve a handle to it
 	m_window = CreateWindowW(L"WindowClass", wideStr, WS_OVERLAPPED, 0, 0, 800, 600, NULL, NULL, m_setup->instance, NULL);
 
+	m_states = new LinkedList<State>;
+	m_currentState = NULL;
+
+	m_input = new Input(m_window);
+
 	srand(timeGetTime());
+
+	if (m_setup->StateSetup != NULL)
+		m_setup->StateSetup();
 
 	m_loaded = true;
 }
 
+//-----------------------------------------------------------------------------
+// The engine class destructor.
+//-----------------------------------------------------------------------------
 Engine::~Engine() {
 	if (m_loaded == true) {
+		if (m_currentState != NULL)
+			m_currentState->Close();
 
+		SAFE_DELETE(m_states);
+
+		SAFE_DELETE(m_input);
 	}
 
 	CoUninitialize();
@@ -77,9 +98,15 @@ Engine::~Engine() {
 	SAFE_DELETE(m_setup);
 }
 
+//-----------------------------------------------------------------------------
+// Enters the engine into the main processing loop.
+//-----------------------------------------------------------------------------
 void Engine::Run() {
 	if (m_loaded == true) {
 		ShowWindow(m_window, SW_NORMAL);
+
+		ViewerSetup viewer;
+
 
 		MSG msg;
 		ZeroMemory(&msg, sizeof(MSG));
@@ -94,6 +121,23 @@ void Engine::Run() {
 				static unsigned long lastTime = currentTime;
 				float elapsed = (currentTime - lastTime) / 1000.0f;
 				lastTime = currentTime;
+
+				m_input->Update();
+
+				if (m_input->GetKeyPress(DIK_F)) {
+					PostQuitMessage(0);
+				}
+
+				// Request the viewer from the current state, if there is one
+				if (m_currentState != NULL)
+					m_currentState->RequestViewer(&viewer);
+
+				// Update the current state, taking state change into account
+				m_stateChanged = false;
+				if (m_currentState != NULL)
+					m_currentState->Update(elapsed);
+				if (m_stateChanged == true)
+					continue;
 			}
 		}
 	}
@@ -101,10 +145,75 @@ void Engine::Run() {
 	SAFE_DELETE(g_engine);
 }
 
+//-----------------------------------------------------------------------------
+// Returns the window handle.
+//-----------------------------------------------------------------------------
 HWND Engine::GetWindow() {
 	return m_window;
 }
 
+//-----------------------------------------------------------------------------
+// Sets the deactive flag.
+//-----------------------------------------------------------------------------
 void Engine::SetDeactiveFlag(bool deactive) {
 	m_deactive = deactive;
+}
+
+//-----------------------------------------------------------------------------
+// Adds a state to the engine.
+//-----------------------------------------------------------------------------
+void Engine::AddState(State *state, bool change) {
+	m_states->Add(state);
+
+	if (change == false)
+		return;
+
+	if (m_currentState != NULL)
+		m_currentState->Close();
+
+	m_currentState = m_states->GetLast();
+	m_currentState->Load();
+}
+
+//-----------------------------------------------------------------------------
+// Removes a state from the engine
+//-----------------------------------------------------------------------------
+void Engine::RemoveState(State *state) {
+	m_states->Remove(&state);
+}
+
+//-----------------------------------------------------------------------------
+// Changes processing to the state with the specified ID.
+//-----------------------------------------------------------------------------
+void Engine::ChangeState(unsigned long id) {
+	m_states->Iterate(true);
+
+	while (m_states->Iterate() != NULL) {
+		if (m_states->GetCurrent()->GetId() == id) {
+			if (m_currentState != NULL)
+				m_currentState->Close();
+
+			m_currentState = m_states->GetCurrent();
+			m_currentState->Load();
+
+			m_stateChanged = true;
+			
+			break;
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Returns a pointer to the current state.
+//-----------------------------------------------------------------------------
+State* Engine::GetCurrentState() {
+	return m_currentState;
+}
+
+
+//-----------------------------------------------------------------------------
+// Returns a pointer to the input object.
+//-----------------------------------------------------------------------------
+Input* Engine::GetInput() {
+	return m_input;
 }

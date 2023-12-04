@@ -27,7 +27,7 @@
 .vscode/
 Engine/.vs
 x64/
-
+Debug/
 # Visual Studio specific files
 *.suo
 *.user
