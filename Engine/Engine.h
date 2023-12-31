@@ -1,7 +1,6 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#pragma comment(lib, "dinput8")
 
 #define DIRECTINPUT_VERSION 0x0800
 
@@ -27,6 +26,9 @@
 #include "Geometry.h"
 #include "State.h"
 #include "Input.h"
+#include "Scripting.h"
+
+
 
 struct EngineSetup {
 	HINSTANCE instance;
