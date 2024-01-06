@@ -18,7 +18,7 @@ public:
 
 		if (name != NULL && path != NULL) {
 			m_filename = new char[strlen(name) + strlen(path) + 1];
-			sprintf_s(m_filename, "%s%s", path, name);
+			sprintf_s(m_filename, strlen(name) + strlen(path) + 1, "%s%s", path, name);
 		}
 
 		// Start the reference count
@@ -144,7 +144,7 @@ public:
 
 private:
 	LinkedList<T>* m_list;
-	void (*CreateResource)(T** resource, char* name, char* path);
+	void (*CreateResource)(T** resource, char* name,const char* path);
 };
 
 #endif // !RESOURCE_MANAGEMENT_H
