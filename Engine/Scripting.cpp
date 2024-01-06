@@ -4,20 +4,20 @@ Variable::Variable(char* name, FILE* file) {
 
 	// Store the variable name
 	m_name = new char[strlen(name) + 1];
-	strcpy(m_name, name);
+	strcpy_s(m_name,sizeof(m_name), name);
 
 	if (file == NULL)
 		return;
 
 	// Read the variable type
 	char buffer[MAX_PATH];
-	fscanf(file, "%s", buffer);
+	fscanf_s(file, "%s", buffer);
 
 	if (strcmp(buffer, "bool") == 0){
 		m_type = VARIABLE_BOOL;
 		
 		bool value;
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		if (strcmp(buffer, "true") == 0) {
 			value = true;
 		}
@@ -25,44 +25,44 @@ Variable::Variable(char* name, FILE* file) {
 			value = false;
 		}
 		m_data = new bool;
-		memcpy(m_data, &value, sizeof(bool));
+		memcpy_s(m_data, sizeof(m_data), &value, sizeof(bool));
 	}
 	else if (strcmp(buffer, "colour") == 0) {
 		m_type = VARIABLE_COLOUR;
 
 		D3DCOLORVALUE colour;
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		colour.r = (float)atof(buffer);
 
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		colour.g = (float)atof(buffer);
 
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		colour.b = (float)atof(buffer);
 
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		colour.a = (float)atof(buffer);
 
 		m_data = new D3DCOLORVALUE;
-		memcpy(m_data, &colour, sizeof(D3DCOLORVALUE));
+		memcpy_s(m_data, sizeof(m_data), &colour, sizeof(D3DCOLORVALUE));
 	}
 	else if(strcmp(buffer, "float") == 0){
 		m_type = VARIABLE_FLOAT;
 
 		float value;
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		value = (float)atof(buffer);
 		m_data = new float;
-		memcpy(m_data, &value, sizeof(float));
+		memcpy_s(m_data, sizeof(m_data), &value, sizeof(float));
 	}
 	else if (strcmp(buffer, "number") == 0) {
 		m_type = VARIABLE_NUMBER;
 
 		long value;
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		value = (float)atol(buffer);
 		m_data = new long;
-		memcpy(m_data, &value, sizeof(long));
+		memcpy_s(m_data, sizeof(m_data), &value, sizeof(long));
 	}
 	else if (strcmp(buffer, "string")) {
 		m_type = VARIABLE_STRING;
@@ -70,7 +70,7 @@ Variable::Variable(char* name, FILE* file) {
 		bool commasFound = false;
 		ZeroMemory(buffer, MAX_PATH * sizeof(char));
 
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		while (true) {
 			if (strcmp(buffer, "\"") == 0) {
 				commasFound = true;
@@ -82,7 +82,7 @@ Variable::Variable(char* name, FILE* file) {
 				fsetpos(file, &--pos);
 				break;
 			}
-			fscanf(file, "%s", buffer);
+			fscanf_s(file, "%s", buffer);
 		}
 
 		char completeString[MAX_PATH];
@@ -90,7 +90,7 @@ Variable::Variable(char* name, FILE* file) {
 		bool addSpacing = false;
 
 		do {
-			fscanf(file, "%s", buffer);
+			fscanf_s(file, "%s", buffer);
 
 			if (strcmp(&buffer[strlen(buffer) - 1], "\"") == 0) {
 				buffer[strlen(buffer) - 1] = 0;
@@ -106,31 +106,31 @@ Variable::Variable(char* name, FILE* file) {
 		} while (commasFound == true);
 
 		m_data = new char[strlen(completeString) + 1];
-		strcpy((char*)m_data, completeString);
+		strcpy_s((char*)m_data, sizeof(m_data), completeString);
 	}
 	else if (strcmp(buffer, "vector") == 0) {
 		m_type = VARIABLE_VECTOR;
 
 		D3DXVECTOR3 vector;
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		vector.x = (float)atof(buffer);
 
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		vector.y = (float)atof(buffer);
 
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		vector.z = (float)atof(buffer);
 		
 		m_data = new D3DXVECTOR3;
-		memcpy(m_data, &vector, sizeof(D3DXVECTOR3));
+		memcpy_s(m_data, sizeof(m_data),&vector, sizeof(D3DXVECTOR3));
 	}
 	else
 	{
 		m_type = VARIABLE_UNKNOWN;
 
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 		m_data = new char[strlen(buffer) + 1];
-		strcpy((char*)m_data, buffer);
+		strcpy_s((char*)m_data, sizeof(m_data), buffer);
 	}
 }
 
@@ -145,37 +145,37 @@ Variable::Variable(char* name, char type, void* value) {
 	switch (m_type) {
 	case VARIABLE_BOOL:
 		m_data = new bool;
-		memcpy(m_data, (bool*)value, sizeof(bool));
+		memcpy_s(m_data, sizeof(m_data), (bool*)value, sizeof(bool));
 		return;
 
 	case VARIABLE_COLOUR:
 		m_data = new D3DCOLORVALUE;
-		memcpy(m_data, (D3DCOLORVALUE*)value, sizeof(D3DCOLORVALUE));
+		memcpy_s(m_data, sizeof(m_data), (D3DCOLORVALUE*)value, sizeof(D3DCOLORVALUE));
 		return;
 
 	case VARIABLE_FLOAT:
 		m_data = new float;
-		memcpy(m_data, (float*)value, sizeof(float));
+		memcpy_s(m_data, sizeof(m_data), (float*)value, sizeof(float));
 		return;
 
 	case VARIABLE_NUMBER:
 		m_data = new long;
-		memcpy(m_data, (long*)value, sizeof(long));
+		memcpy_s(m_data, sizeof(m_data), (long*)value, sizeof(long));
 		return;
 
 	case VARIABLE_STRING:
 		m_data = new char[strlen((char*)value) + 1];
-		strcpy((char*)m_data, (char*)value);
+		strcpy_s((char*)m_data, sizeof(m_data), (char*)value);
 		return;
 
 	case VARIABLE_VECTOR:
 		m_data = new D3DXVECTOR3;
-		memcpy(m_data, (D3DXVECTOR3*)value, sizeof(D3DXVECTOR3));
+		memcpy_s(m_data, sizeof(m_data), (D3DXVECTOR3*)value, sizeof(D3DXVECTOR3));
 		return;
 
 	default:
 		m_data = new char[strlen((char*)value) + 1];
-		strcpy((char*)m_data, (char*)value);
+		strcpy_s((char*)m_data, sizeof(m_data),(char*)value);
 		return;
 	}
 }
@@ -241,13 +241,13 @@ Script::Script(char* name,const char* path) : Resource<Script>(name, path) {
 	
 	// Open the script file
 	FILE* file;
-	if ((file = fopen(GetFilename(), "r")) == NULL)
+	if (fopen_s(&file, GetFilename(), "r") != 0)
 		return;
 
 	// Continuew reading from the file
 	bool read = false;
 	char buffer[MAX_PATH];
-	fscanf(file, "%s", buffer);
+	fscanf_s(file, "%s", buffer);
 
 	while (feof(file)) {
 		// Check if the file position indicator in between a #begin and #end
@@ -264,7 +264,7 @@ Script::Script(char* name,const char* path) : Resource<Script>(name, path) {
 			read = true;
 		}
 		
-		fscanf(file, "%s", buffer);
+		fscanf_s(file, "%s", buffer);
 	}
 
 	fclose(file);
@@ -313,12 +313,12 @@ void Script::SaveScript(char* filename) {
 	char output[MAX_PATH];
 
 	if (filename != NULL) {
-		if ((file = fopen(filename, "w")) == NULL) {
+		if (fopen_s(&file,filename, "w") != 0) {
 			return;
 		}
 	}
 	else {
-		if ((file = fopen(GetFilename(), "w")) == NULL) {
+		if (fopen_s(&file, GetFilename(), "w") != 0) {
 			return;
 		}
 	}
@@ -333,17 +333,17 @@ void Script::SaveScript(char* filename) {
 		switch (m_variables->GetCurrent()->GetType()) {
 		case VARIABLE_BOOL:
 			if (*((bool*)m_variables->GetCurrent()->GetType()) == true) {
-				sprintf(output, "%s bool true", m_variables->GetCurrent()->GetName());
+				sprintf_s(output, "%s bool true", m_variables->GetCurrent()->GetName());
 			}
 			else {
-				sprintf(output, "%s bool false", m_variables->GetCurrent()->GetName());
+				sprintf_s(output, "%s bool false", m_variables->GetCurrent()->GetName());
 			}
 			fputs(output, file);
 			fputs("\n", file);
 			continue;
 
 		case VARIABLE_COLOUR:
-			sprintf(output, "%s colour %f %f %f %f",
+			sprintf_s(output, "%s colour %f %f %f %f",
 				m_variables->GetCurrent()->GetName(),
 				((D3DCOLORVALUE*)m_variables->GetCurrent()->GetData())->r,
 				((D3DCOLORVALUE*)m_variables->GetCurrent()->GetData())->g,
@@ -354,28 +354,28 @@ void Script::SaveScript(char* filename) {
 			continue;
 
 		case VARIABLE_FLOAT:
-			sprintf(output, "%s float %f", m_variables->GetCurrent()->GetName(),
+			sprintf_s(output, "%s float %f", m_variables->GetCurrent()->GetName(),
 				*(float*)(m_variables->GetCurrent()->GetData()));
 			fputs(output, file);
 			fputs("\n", file);
 			continue;
 
 		case VARIABLE_NUMBER:
-			sprintf(output, "%s number %f", m_variables->GetCurrent()->GetName(),
+			sprintf_s(output, "%s number %f", m_variables->GetCurrent()->GetName(),
 				*(long*)(m_variables->GetCurrent()->GetData()));
 			fputs(output, file);
 			fputs("\n", file);
 			continue;
 
 		case VARIABLE_STRING:
-			sprintf(output, "%s string %f", m_variables->GetCurrent()->GetName(),
+			sprintf_s(output, "%s string %f", m_variables->GetCurrent()->GetName(),
 				(char*)(m_variables->GetCurrent()->GetData()));
 			fputs(output, file);
 			fputs("\n", file);
 			continue;
 
 		case VARIABLE_VECTOR:
-			sprintf(output, "%s vector %f %f %f",
+			sprintf_s(output, "%s vector %f %f %f",
 				m_variables->GetCurrent()->GetName(),
 				((D3DXVECTOR3*)m_variables->GetCurrent()->GetData())->x,
 				((D3DXVECTOR3*)m_variables->GetCurrent()->GetData())->y,
@@ -385,7 +385,7 @@ void Script::SaveScript(char* filename) {
 			continue;
 
 		default:
-			sprintf(output, "%s unknown %s", m_variables->GetCurrent()->GetName(),
+			sprintf_s(output, "%s unknown %s", m_variables->GetCurrent()->GetName(),
 				(char*)m_variables->GetCurrent()->GetData());
 			fputs(output, file);
 			fputs("\n", file);
