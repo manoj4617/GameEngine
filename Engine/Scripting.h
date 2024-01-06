@@ -17,7 +17,7 @@ public:
 	virtual ~Variable();
 
 	char GetType();
-	char* GetData();
+	void* GetData();
 	char* GetName();
 
 private:
@@ -30,9 +30,9 @@ private:
 // Script class
 //---------------------------------------------------------
 
-class Script {
+class Script : public Resource<Script> {
 public:
-	Script(char* name,const char* path = "./");
+	Script(char* name, const char* path = "./");
 	virtual ~Script();
 
 	void AddVariable(char* name, char type, void* value);

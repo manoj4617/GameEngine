@@ -6,7 +6,7 @@ template <class T>
 class Resource {
 
 public:
-	Resource(char* name, char* path = "./") {
+	Resource(char* name,const char* path = "./") {
 		if (name != NULL) {
 			m_name = new char[strlen(name) + 1];
 			memcpy(m_name, name, (strlen(name) + 1) * sizeof(char));
@@ -72,7 +72,7 @@ private:
 template<class T>
 class ResourceManager {
 public:
-	ResourceManager(void(*CreateResourceFunc)(T** resource, char* name, char* path) = NULL) {
+	ResourceManager(void(*CreateResourceFunc)(T** resource, char* name,const char* path) = NULL) {
 		m_list = new LinkedList<T>;
 		CreateResource = CreateResourceFunc;
 	}
