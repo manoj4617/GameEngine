@@ -101,7 +101,7 @@ Variable::Variable(char* name, FILE* file) {
 				addSpacing = true;
 			}
 			else {
-				strcat(completeString, buffer);
+				strcat_s(completeString, buffer);
 			}
 		} while (commasFound == true);
 
@@ -138,7 +138,7 @@ Variable::Variable(char* name, FILE* file) {
 // Variable class comstructor
 Variable::Variable(char* name, char type, void* value) {
 	m_name = new char[strlen(name) + 1];
-	strncpy(m_name, name, sizeof(name));
+	strcpy_s(m_name, sizeof(m_name),name);
 
 	m_type = type;
 

@@ -18,7 +18,7 @@ public:
 
 		if (name != NULL && path != NULL) {
 			m_filename = new char[strlen(name) + strlen(path) + 1];
-			sprintf(m_filename, "%s%s", path, name);
+			sprintf_s(m_filename, "%s%s", path, name);
 		}
 
 		// Start the reference count
