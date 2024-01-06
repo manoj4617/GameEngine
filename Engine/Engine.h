@@ -55,7 +55,7 @@ public:
 	void RemoveState(State* state);
 	void ChangeState(unsigned long id);
 	State* GetCurrentState();
-
+	ResourceManager<Script>* GetScriptManager();
 	Input* GetInput();
 
 private:
@@ -68,6 +68,8 @@ private:
 	LinkedList<State>* m_states;	// LL of states
 	State* m_currentState;			// Pointer to current state
 	bool m_stateChanged;			// indicates if the state has changed in the current frame
+
+	ResourceManager<Script>* m_scriptManager; // Script Manager
 
 	Input* m_input;					// Input obj
 };

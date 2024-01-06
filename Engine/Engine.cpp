@@ -68,6 +68,8 @@ Engine::Engine(EngineSetup* setup) {
 	m_states = new LinkedList<State>;
 	m_currentState = NULL;
 
+	m_scriptManager = new ResourceManager<Script>;
+
 	m_input = new Input(m_window);
 
 	srand(timeGetTime());
@@ -89,6 +91,8 @@ Engine::~Engine() {
 		SAFE_DELETE(m_states);
 
 		SAFE_DELETE(m_input);
+
+		SAFE_DELETE(m_scriptManager);
 	}
 
 	CoUninitialize();
